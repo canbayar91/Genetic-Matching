@@ -2,6 +2,7 @@
 #define GENETIC_PROCESSOR
 
 #include "Population.h"
+#include <unordered_map>
 
 #define POPULATION_SIZE 10
 #define MAX_ITERATION_COUNT 50

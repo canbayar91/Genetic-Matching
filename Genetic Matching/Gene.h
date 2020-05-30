@@ -1,6 +1,8 @@
 #ifndef GENE
 #define GENE
 
+#include "FitnessPreprocessor.h"
+
 class Gene {
 public:
 
@@ -30,6 +32,9 @@ private:
 
 	// Contribution of the gene to the fitness score - 0 if matchFlag is false (Scaled Jacobian)
 	double fitness = 0;
+
+	// Fitness preprocessor stores the pre-calculated fitness scores
+	static FitnessPreprocessor* preprocessor;
 
 };
 

@@ -1,10 +1,10 @@
 #include "MeshReader.h"
 #include <fstream>
 
-MeshReader* MeshReader::instance;
+MeshReader* MeshReader::instance = new MeshReader();
 
 MeshReader::MeshReader() {
-	instance = new MeshReader();
+	// Empty Constructor
 }
 
 MeshReader::~MeshReader() {

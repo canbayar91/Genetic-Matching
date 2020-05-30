@@ -86,11 +86,19 @@ void Population::generateIndividual() {
 
 void Population::crossover() {
 
+	// Pick a random crossover point
+	size_t faceCount = mesh->getFaceCount();
+	int randomIndex = rand() % faceCount;
+
 	// Increment the counter
 	populationCounter++;
 }
 
 void Population::mutation() {
+
+	// Pick a random mutation point
+	size_t faceCount = mesh->getFaceCount();
+	int randomIndex = rand() % faceCount;
 
 	// Increment the counter
 	populationCounter++;

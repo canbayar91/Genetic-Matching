@@ -1,5 +1,6 @@
 #include "Gene.h"
-#include "EvaluationFunctions.h"
+
+FitnessPreprocessor* Gene::preprocessor = FitnessPreprocessor::getInstance();
 
 void Gene::setFaceId(unsigned int faceId) {
 	this->faceId = faceId;
@@ -8,8 +9,7 @@ void Gene::setFaceId(unsigned int faceId) {
 void Gene::match(unsigned int neighborId) {
 	matchFlag = true;
 	matchId = neighborId;
-	fitness = (double) rand() / RAND_MAX;
-	// EvaluationFunctions::calculateMinimumScaledJacobian();
+	fitness = preprocessor->getFitness(faceId, matchId);
 }
 
 bool Gene::isMatched() {

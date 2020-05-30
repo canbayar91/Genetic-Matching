@@ -1,10 +1,10 @@
 #include "MeshWriter.h"
 #include <fstream>
 
-MeshWriter* MeshWriter::instance;
+MeshWriter* MeshWriter::instance = new MeshWriter();
 
 MeshWriter::MeshWriter() {
-	instance = new MeshWriter();
+	// Empty Constructor
 }
 
 MeshWriter::~MeshWriter() {

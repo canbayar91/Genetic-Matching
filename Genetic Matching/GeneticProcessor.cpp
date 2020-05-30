@@ -12,6 +12,10 @@ GeneticProcessor::~GeneticProcessor() {
 }
 
 void GeneticProcessor::process() {
+
+	// Calculate all possible matching scores for triangles
+	FaceList faceList = mesh->getFaces();
+	FitnessPreprocessor::getInstance()->precalculateMatchingScores(faceList);
 	
 	// Generate the initial population of size n
 	generateInitialPopulation();

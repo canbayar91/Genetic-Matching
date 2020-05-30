@@ -3,6 +3,7 @@
 
 #include "TriangularMesh.h"
 #include <string>
+#include <map>
 
 class MeshWriter {
 public:
