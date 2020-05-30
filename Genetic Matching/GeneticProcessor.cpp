@@ -2,23 +2,13 @@
 #include <iostream>
 #include <ctime>
 
-GeneticProcessor* GeneticProcessor::instance;
-
-GeneticProcessor::GeneticProcessor() {
-	instance = new GeneticProcessor();
+GeneticProcessor::GeneticProcessor(const TriangularMesh* mesh) {
+	this->mesh = mesh;
 }
 
 GeneticProcessor::~GeneticProcessor() {
-	delete instance;
-	instance = 0;
-}
-
-GeneticProcessor* GeneticProcessor::getInstance() {
-	return instance;
-}
-
-void GeneticProcessor::initialize(const TriangularMesh* mesh) {
-	this->mesh = mesh;
+	delete population;
+	population = 0;
 }
 
 void GeneticProcessor::process() {
@@ -26,46 +16,59 @@ void GeneticProcessor::process() {
 	// Generate the initial population of size n
 	generateInitialPopulation();
 
-	// Output the population size
-	std::cout << "Population size: " << POPULATION_SIZE << std::endl;
+	// Start time of generation
+	const clock_t beginTime = clock();
 
 	// Genetically processes the population until a constraint is satisfied
-	unsigned int currentIteration = 0;
-	while (currentIteration < MAX_ITERATION_COUNT) {
+	unsigned int currentGeneration = 0;
+	while (currentGeneration < MAX_ITERATION_COUNT) {
 
-		// Applies crossovers between randomly selected individuals in order to generate new individuals
-		crossover();
+		// Each iteration consists of crossover, mutation and selection phases
+		nextGeneration();
 
-		// Applies mutations on randomly selected individuals in order to generate new individuals
-		mutate();
-
-		// Calculates the fitness score of each individual
-		calculateFitness();
-
-		// Select the fittest individuals for the next generation
-		selectFittest();
+		// Increment the iteration counter
+		currentGeneration++;
 	}
 
-	// Output the iteration count of the algorithm
-	std::cout << "Iteration Count: " << currentIteration << std::endl;
+	// End time of generation
+	const clock_t endTime = clock();
+
+	// Calculate the average time
+	float timeDifference = float(endTime - beginTime);
+	float averageTime = timeDifference / currentGeneration;
+
+	// Output the iteration count and average generation time of the algorithm
+	std::cout << "Generation Count: " << currentGeneration << std::endl;
+	std::cout << "Average Generation Time: " << averageTime / CLOCKS_PER_SEC << " seconds" << std::endl;
 }
 
 void GeneticProcessor::generateInitialPopulation() {
 
+	// Output the population size
+	std::cout << "Population Size: " << POPULATION_SIZE << std::endl;
+
+	// Start time of generation
+	const clock_t beginTime = clock();
+
+	// Initialize the population
+	population = new Population(POPULATION_SIZE, mesh);
+
+	// End time of generation
+	const clock_t endTime = clock();
+
+	// Output the time difference
+	float timeDifference = float(endTime - beginTime);
+	std::cout << "Initial Population Creation Time: " << timeDifference / CLOCKS_PER_SEC << " seconds" << std::endl;
 }
 
-void GeneticProcessor::selectFittest() {
+void GeneticProcessor::nextGeneration() {
 
-}
-
-void GeneticProcessor::crossover() {
-
-}
-
-void GeneticProcessor::mutate() {
-
-}
-
-void GeneticProcessor::calculateFitness() {
-
+	// Each generation doubles the size of the population by a factor of 2
+	for (unsigned int i = 0; i < POPULATION_SIZE / 2; i++) {
+		population->crossover();
+		population->mutation();
+	}
+	
+	// Half of the individuals eliminated at the end of the generation
+	population->selection();
 }

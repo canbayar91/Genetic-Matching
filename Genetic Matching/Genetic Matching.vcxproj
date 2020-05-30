@@ -147,7 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Chromosome.cpp" />
     <ClCompile Include="EvaluationFunctions.cpp" />
     <ClCompile Include="Gene.cpp" />
     <ClCompile Include="GeneticProcessor.cpp" />
@@ -155,13 +154,13 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshReader.cpp" />
     <ClCompile Include="MeshWriter.cpp" />
+    <ClCompile Include="Population.cpp" />
     <ClCompile Include="Quadrilateral.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="TriangularMesh.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Chromosome.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="EvaluationFunctions.h" />
     <ClInclude Include="Face.h" />
@@ -170,6 +169,7 @@
     <ClInclude Include="GeometricFunctions.h" />
     <ClInclude Include="MeshReader.h" />
     <ClInclude Include="MeshWriter.h" />
+    <ClInclude Include="Population.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Quadrilateral.h" />
     <ClInclude Include="Triangle.h" />
