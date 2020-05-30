@@ -151,6 +151,7 @@
     <ClCompile Include="Gene.cpp" />
     <ClCompile Include="GeneticProcessor.cpp" />
     <ClCompile Include="GeometricFunctions.cpp" />
+    <ClCompile Include="Individual.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshReader.cpp" />
     <ClCompile Include="MeshWriter.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Gene.h" />
     <ClInclude Include="GeneticProcessor.h" />
     <ClInclude Include="GeometricFunctions.h" />
+    <ClInclude Include="Individual.h" />
     <ClInclude Include="MeshReader.h" />
     <ClInclude Include="MeshWriter.h" />
     <ClInclude Include="Population.h" />

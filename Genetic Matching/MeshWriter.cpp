@@ -36,7 +36,7 @@ void MeshWriter::writeMesh(std::string filepath, const TriangularMesh* mesh, std
 	outfile << numVertices << " " << numFaces << " " << numEdges << std::endl;
 
 	// Write the vertices into the file
-	std::vector<VertexData*> vertexList = mesh->getVertices();
+	VertexList vertexList = mesh->getVertices();
 	for (unsigned int i = 0; i < numVertices; i++) {
 
 		// Get the vertex coordinates
@@ -47,8 +47,8 @@ void MeshWriter::writeMesh(std::string filepath, const TriangularMesh* mesh, std
 	}
 
 	// Write the quadrilateral face vertices using matching map
-	std::vector<FaceData*> faceList = mesh->getFaces();
-	for (std::map<unsigned int, unsigned int>::iterator it = matching.begin(); it != matching.end(); it++) {
+	FaceList faceList = mesh->getFaces();
+	for (auto it = matching.begin(); it != matching.end(); it++) {
 
 		// Get the matched faces
 		FaceData* first = faceList[it->first];

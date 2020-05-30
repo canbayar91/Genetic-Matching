@@ -6,10 +6,9 @@ void Gene::setFaceId(unsigned int faceId) {
 }
 
 void Gene::match(unsigned int neighborId) {
-
 	matchFlag = true;
 	matchId = neighborId;
-
+	fitness = (double) rand() / RAND_MAX;
 	// EvaluationFunctions::calculateMinimumScaledJacobian();
 }
 

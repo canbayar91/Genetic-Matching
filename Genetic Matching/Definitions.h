@@ -2,7 +2,7 @@
 #define DEFINITIONS
 
 #include "Face.h"
-#include <map>
+#include <utility>
 
 typedef std::pair<unsigned int, unsigned int> VertexPair;
 
@@ -27,12 +27,6 @@ struct HalfEdgeData {
 	HalfEdgeData* pair;
 	HalfEdgeData* next;
 	FaceData* face;
-};
-
-struct MaxPriorityOrder {
-	bool operator()(FaceData* &lhs, FaceData* &rhs) {
-		return lhs->priority < rhs->priority;
-	}
 };
 
 #endif

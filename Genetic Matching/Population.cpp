@@ -18,6 +18,8 @@ void Population::initialize() {
 	for (unsigned int i = 0; i < size; i++) {
 		generateIndividual();
 	}
+
+	// outputPopulationStatistics();
 }
 
 void Population::generateIndividual() {
@@ -41,7 +43,7 @@ void Population::generateIndividual() {
 	Chromosome chromosome(faceCount);
 
 	// Run through each face in the created random order and try to match each face with first non-matched neighbor
-	std::vector<FaceData*> faceList = mesh->getFaces();
+	FaceList faceList = mesh->getFaces();
 	for (size_t i = 0; i < faceCount; i++) {
 
 		// Select a random face and if it is not matched yet, try to match
@@ -72,25 +74,51 @@ void Population::generateIndividual() {
 	}
 
 	// Add the new individual into the population
-	chromosomeList.push_back(chromosome);
+	Individual individual(populationCounter, chromosome);
+	population.push(individual);
+
+	// Add reference to the map
+	individualMapping[populationCounter] = individual;
+
+	// Increment the counter
+	populationCounter++;
 }
 
 void Population::crossover() {
 
+	// Increment the counter
+	populationCounter++;
 }
 
 void Population::mutation() {
 
+	// Increment the counter
+	populationCounter++;
 }
 
 void Population::selection() {
 
+	// Remove the individuals with the lowest fitness score
+	while (population.size() > size) {
+
+		// Remove the individual from queue
+		Individual individual = population.top();
+		population.pop();
+
+		// Erase its reference from map
+		unsigned int individualId = individual.getId();
+		individualMapping.erase(individualId);
+	}
 }
 
-void Population::outputIndividualMatchings() {
+void Population::outputPopulationStatistics() {
 
 	// Iterate through chromosomes
-	for (Chromosome chromosome : chromosomeList) {
+	for (auto it = individualMapping.begin(); it != individualMapping.end(); it++) {
+
+		// Get the chromosome
+		Individual individual = it->second;
+		Chromosome chromosome = individual.getChromosome();
 
 		// Iterate through genes and increment if face is matched
 		unsigned int count = 0;
@@ -102,6 +130,7 @@ void Population::outputIndividualMatchings() {
 
 		// Output the total matched face count
 		double percentage = (double) count / (double) mesh->getFaceCount() * 100;
-		std::cout << "Matching Count: " << count << ", Rate:" << percentage << std::endl;
+		std::cout << "Matched Genes: " << count << " Percentage: " << percentage << std::endl;
+		std::cout << "Fitness Score: " << individual.getFitness() << std::endl;
 	}
 }

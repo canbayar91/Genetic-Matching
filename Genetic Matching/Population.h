@@ -1,13 +1,10 @@
 #ifndef POPULATION
 #define POPULATION
 
-#include "Gene.h"
+#include "Individual.h"
 #include "TriangularMesh.h"
-
-// There is exactly one gene for each face of the mesh in a chromosome
-// Each gene stores the information whether the face is matched or not, and if so with which face it is matched
-// Since a match requires two faces, there are two genes for each matching that stores the same information
-typedef std::vector<Gene> Chromosome;
+#include <unordered_map>
+#include <queue>
 
 class Population {
 public:
@@ -24,8 +21,8 @@ public:
 	// Selects the individuals with highest fitness score and removes others until population size reaches initial size
 	void selection();
 
-	// Debug function that outputs how many faces successfully matched in each individual
-	void outputIndividualMatchings();
+	// Debug function for some statistics for the individuals in the population
+	void outputPopulationStatistics();
 
 private:
 
@@ -35,8 +32,14 @@ private:
 	// Input triangular mesh instance
 	const TriangularMesh* mesh;
 
-	// Individuals in the population
-	std::vector<Chromosome> chromosomeList;
+	// Individuals in the population, sorted by fitness score in descending order
+	std::priority_queue<Individual, std::vector<Individual>, FitnessOrder> population;
+
+	// Used as a fast reference for individuals in population
+	std::unordered_map<unsigned int, Individual> individualMapping;
+
+	// Each time a new individual is created, this counter will be incremented
+	unsigned int populationCounter = 0;
 
 	// Generates random individuals until it reaches the initial size
 	void initialize();
