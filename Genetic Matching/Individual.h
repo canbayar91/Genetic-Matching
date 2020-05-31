@@ -24,8 +24,14 @@ public:
 	// Get the chromosome
 	Chromosome &getChromosome();
 
-	// Get the fitness score
-	double getFitness();
+	// Get the total fitness score of all genes in the chromosome
+	double getTotalFitness();
+
+	// Get the average fitness score of a gene in the chromosome
+	double getAverageFitness();
+
+	// Get the matched gene count
+	unsigned int getMatchCount();
 
 private:
 
@@ -38,15 +44,21 @@ private:
 	// Fitness score (Scaled Jacobian)
 	double fitness = 0;
 
+	// Total number of matched genes
+	unsigned int matchCount = 0;
+
 	// Calculates the fitness of the individual
 	void calculateFitness();
+
+	// Counts the number of genes that has the match flag set
+	void countMatchings();
 
 };
 
 // Callback used in sorting individuals according to fitness score in descending order
 struct FitnessOrder {
 	bool operator()(Individual &lhs, Individual &rhs) {
-		return lhs.getFitness() > rhs.getFitness();
+		return lhs.getTotalFitness() > rhs.getTotalFitness();
 	}
 };
 

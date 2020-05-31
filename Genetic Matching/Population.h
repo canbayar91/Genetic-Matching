@@ -21,6 +21,12 @@ public:
 	// Selects the individuals with highest fitness score and removes others until population size reaches initial size
 	void selection();
 
+	// Returns the individual with the best fitness score
+	Individual &getFittestIndividual();
+
+	// Returns the individual with the biggest amount of matched genes
+	Individual &getMostMatchedIndividual();
+
 	// Debug function for some statistics for the individuals in the population
 	void outputPopulationStatistics();
 
@@ -41,11 +47,20 @@ private:
 	// Each time a new individual is created, this counter will be incremented
 	unsigned int populationCounter = 0;
 
+	// The identifier of the fittest individual
+	unsigned int fittestIndividualId = 0;
+
+	// The identifier of the individual with the highest amount of matching
+	unsigned int mostMatchedIndividualId = 0;
+
 	// Generates random individuals until it reaches the initial size
 	void initialize();
 
 	// Generates a new random individual (matching) for the population
 	void generateIndividual();
+
+	// Stores the given individual 
+	void storeIndividual(Individual &individual);
 
 };
 

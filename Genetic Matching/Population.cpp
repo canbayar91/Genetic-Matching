@@ -75,6 +75,12 @@ void Population::generateIndividual() {
 
 	// Add the new individual into the population
 	Individual individual(populationCounter, chromosome);
+	storeIndividual(individual);
+}
+
+void Population::storeIndividual(Individual &individual) {
+
+	// Add the new individual into the population
 	population.push(individual);
 
 	// Add reference to the map
@@ -82,6 +88,18 @@ void Population::generateIndividual() {
 
 	// Increment the counter
 	populationCounter++;
+
+	// Update the fittest individual
+	Individual fittestIndividual = getFittestIndividual();
+	if (individual.getAverageFitness() > fittestIndividual.getAverageFitness()) {
+		fittestIndividualId = individual.getId();
+	}
+
+	// Update the most matched individual
+	Individual mostMatchedIndividual = getMostMatchedIndividual();
+	if (individual.getMatchCount() > fittestIndividual.getMatchCount()) {
+		mostMatchedIndividualId = individual.getId();
+	}
 }
 
 void Population::crossover() {
@@ -91,7 +109,7 @@ void Population::crossover() {
 	int randomIndex = rand() % faceCount;
 
 	// Increment the counter
-	populationCounter++;
+	// storeIndividual(individual);
 }
 
 void Population::mutation() {
@@ -101,7 +119,7 @@ void Population::mutation() {
 	int randomIndex = rand() % faceCount;
 
 	// Increment the counter
-	populationCounter++;
+	// storeIndividual(individual);
 }
 
 void Population::selection() {
@@ -117,6 +135,18 @@ void Population::selection() {
 		unsigned int individualId = individual.getId();
 		individualMapping.erase(individualId);
 	}
+}
+
+Individual &Population::getFittestIndividual() {
+
+	// Returns the fittest individual
+	return individualMapping[fittestIndividualId];
+}
+
+Individual &Population::getMostMatchedIndividual() {
+
+	// Returns the individual with most matched genes
+	return individualMapping[mostMatchedIndividualId];
 }
 
 void Population::outputPopulationStatistics() {
@@ -139,6 +169,7 @@ void Population::outputPopulationStatistics() {
 		// Output the total matched face count
 		double percentage = (double) count / (double) mesh->getFaceCount() * 100;
 		std::cout << "Matched Genes: " << count << " Percentage: " << percentage << std::endl;
-		std::cout << "Fitness Score: " << individual.getFitness() << std::endl;
+		std::cout << "Fitness Score: " << individual.getAverageFitness() << std::endl;
+		std::cout << "Matched Face Count: " << individual.getMatchCount() << std::endl;
 	}
 }

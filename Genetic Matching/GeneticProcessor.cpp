@@ -24,14 +24,13 @@ void GeneticProcessor::process() {
 	const clock_t beginTime = clock();
 
 	// Genetically processes the population until a constraint is satisfied
-	unsigned int currentGeneration = 0;
-	while (currentGeneration < MAX_ITERATION_COUNT) {
+	while (!stopConditionSatisfied()) {
 
 		// Each iteration consists of crossover, mutation and selection phases
 		nextGeneration();
 
 		// Increment the iteration counter
-		currentGeneration++;
+		generationCounter++;
 	}
 
 	// End time of generation
@@ -39,10 +38,10 @@ void GeneticProcessor::process() {
 
 	// Calculate the average time
 	float timeDifference = float(endTime - beginTime);
-	float averageTime = timeDifference / currentGeneration;
+	float averageTime = timeDifference / generationCounter;
 
 	// Output the iteration count and average generation time of the algorithm
-	std::cout << "Generation Count: " << currentGeneration << std::endl;
+	std::cout << "Generation Count: " << generationCounter << std::endl;
 	std::cout << "Average Generation Time: " << averageTime / CLOCKS_PER_SEC << " seconds" << std::endl;
 }
 
@@ -75,4 +74,19 @@ void GeneticProcessor::nextGeneration() {
 	
 	// Half of the individuals eliminated at the end of the generation
 	population->selection();
+}
+
+bool GeneticProcessor::stopConditionSatisfied() {
+
+	// Best individuals
+	Individual fittestIndividual = population->getFittestIndividual();
+	Individual mostMatchedIndividual = population->getMostMatchedIndividual();
+
+	// The defined conditions
+	bool fitnessConditionSatisfied = fittestIndividual.getAverageFitness() >= FITNESS_OBJECTIVE;
+	bool matchingConditionSatisfied = mostMatchedIndividual.getMatchCount() >= MATCH_PERCENTAGE_OBJECTIVE;
+	bool generationConditionSatisfied = generationCounter >= MAX_ITERATION_COUNT;
+
+	// Satisfying a single condition is enough to stop iterating
+	return fitnessConditionSatisfied || matchingConditionSatisfied || generationConditionSatisfied;
 }
