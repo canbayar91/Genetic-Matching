@@ -82,9 +82,13 @@ bool GeneticProcessor::stopConditionSatisfied() {
 	Individual fittestIndividual = population->getFittestIndividual();
 	Individual mostMatchedIndividual = population->getMostMatchedIndividual();
 
+	// Individual scores
+	double fitnessScore = fittestIndividual.getAverageFitness();
+	double matchingPercentage = fittestIndividual.getMatchingPercentage();
+
 	// The defined conditions
-	bool fitnessConditionSatisfied = fittestIndividual.getAverageFitness() >= FITNESS_OBJECTIVE;
-	bool matchingConditionSatisfied = mostMatchedIndividual.getMatchCount() >= MATCH_PERCENTAGE_OBJECTIVE;
+	bool fitnessConditionSatisfied = fitnessScore >= FITNESS_OBJECTIVE;
+	bool matchingConditionSatisfied = matchingPercentage >= MATCH_PERCENTAGE_OBJECTIVE;
 	bool generationConditionSatisfied = generationCounter >= MAX_ITERATION_COUNT;
 
 	// Satisfying a single condition is enough to stop iterating

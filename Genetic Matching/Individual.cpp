@@ -49,3 +49,7 @@ double Individual::getAverageFitness() {
 unsigned int Individual::getMatchCount() {
 	return matchCount;
 }
+
+double Individual::getMatchingPercentage() {
+	return (double) matchCount / (double) chromosome.size() * 100;
+}

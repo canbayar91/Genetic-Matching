@@ -33,6 +33,9 @@ public:
 	// Get the matched gene count
 	unsigned int getMatchCount();
 
+	// Get the percentage of matched genes
+	double getMatchingPercentage();
+
 private:
 
 	// Unique identifier
