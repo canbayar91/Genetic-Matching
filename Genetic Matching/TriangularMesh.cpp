@@ -113,11 +113,11 @@ void TriangularMesh::pairHalfEdges(unsigned int origin, unsigned int destination
 	}
 }
 
-const VertexList TriangularMesh::getVertices() const {
+const VertexList &TriangularMesh::getVertices() const {
 	return vertices;
 }
 
-const FaceList TriangularMesh::getFaces() const {
+const FaceList &TriangularMesh::getFaces() const {
 	return faces;
 }
 

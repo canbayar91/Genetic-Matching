@@ -11,27 +11,28 @@ Population::Population(unsigned int size, const TriangularMesh* mesh) {
 
 void Population::initialize() {
 
-	// Initialize the random seed
-	srand(time(NULL));
-
-	// Generate a random individual by random matches
-	for (unsigned int i = 0; i < size; i++) {
-		generateIndividual();
-	}
-
-	// outputPopulationStatistics();
-}
-
-void Population::generateIndividual() {
-
-	// Create a vector that stores an index value for each corresponding face id
+	// Create an initial vector that stores an index value for each corresponding face id
 	size_t faceCount = mesh->getFaceCount();
 	std::vector<size_t> indexVector(faceCount);
 	for (size_t i = 0; i < faceCount; i++) {
 		indexVector[i] = i;
 	}
 
+	// Initialize the random seed
+	srand(time(NULL));
+
+	// Generate a random individual by random matches
+	for (unsigned int i = 0; i < size; i++) {
+		generateIndividual(indexVector);
+	}
+
+	// outputPopulationStatistics();
+}
+
+void Population::generateIndividual(std::vector<size_t> &indexVector) {
+
 	// Apply Fisher-Yates shuffling algorithm to create a random order to consume the faces
+	size_t faceCount = mesh->getFaceCount();
 	for (size_t i = 0; i < faceCount; i++) {
 		int randomIndex = rand() % faceCount;
 		size_t temp = indexVector[i];
@@ -102,24 +103,64 @@ void Population::storeIndividual(Individual &individual) {
 	}
 }
 
-void Population::crossover() {
+void Population::crossover(unsigned int indexSmall, unsigned int indexBig) {
+
+	// Iterate until the small index
+	auto it = individualMapping.begin();
+	for (unsigned int i = 0; i < indexSmall; i++) {
+		it++;
+	}
+
+	// Get the first individual
+	Individual parent1 = it->second;
+
+	// Iterate until the big index
+	for (unsigned int i = indexSmall; i < indexBig; i++) {
+		it++;
+	}
+
+	// Get the second individual
+	Individual parent2 = it->second;
+
+	// Create a new chromosome by copying the parent
+	Individual individual(parent1);
+	individual.setId(populationCounter);
 
 	// Pick a random crossover point
 	size_t faceCount = mesh->getFaceCount();
-	int randomIndex = rand() % faceCount;
+	int rootId = rand() % faceCount;
 
-	// Increment the counter
-	// storeIndividual(individual);
+	// Store the individual (skip if it has worse fitness than the worst individual)
+	Individual worstIndividual = population.top();
+	if (individual.getTotalFitness() > worstIndividual.getTotalFitness()) {
+		storeIndividual(individual);
+	}
 }
 
-void Population::mutation() {
+void Population::mutation(unsigned int index) {
+
+	// Iterate until the index
+	auto it = individualMapping.begin();
+	for (unsigned int i = 0; i < index; i++) {
+		it++;
+	}
+
+	// Get the first individual
+	Individual parent = it->second;
+
+	// Create a new chromosome by copying the parent
+	Individual individual(parent);
+	individual.setId(populationCounter);
 
 	// Pick a random mutation point
 	size_t faceCount = mesh->getFaceCount();
-	int randomIndex = rand() % faceCount;
+	int rootId = rand() % faceCount;
 
-	// Increment the counter
-	// storeIndividual(individual);
+	// Store the individual (skip if it has worse fitness than the worst individual)
+	Individual worstIndividual = population.top();
+	if (individual.getTotalFitness() > worstIndividual.getTotalFitness()) {
+		storeIndividual(individual);
+	}
 }
 
 void Population::selection() {

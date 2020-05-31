@@ -18,10 +18,14 @@ FitnessPreprocessor* FitnessPreprocessor::getInstance() {
 	return instance;
 }
 
-void FitnessPreprocessor::precalculateMatchingScores(FaceList faceList) {
+void FitnessPreprocessor::precalculateMatchingScores(FaceList &faceList) {
 
 	// Start time of calculation
 	const clock_t beginTime = clock();
+
+	// Allocate the vector size at the beginning
+	size_t size = faceList.size();
+	fitnessMap.resize(size);
 
 	// Iterate through each face and store pre-calculated scores for possible matchings
 	for (FaceData* face : faceList) {
@@ -36,7 +40,7 @@ void FitnessPreprocessor::precalculateMatchingScores(FaceList faceList) {
 			unsigned int neighborId = pair->id;
 
 			// Calculate the fitness score by forming a rectangle with two faces
-			if (fitnessMap.count(faceId) == 0 || fitnessMap[faceId].count(neighborId) == 0) {
+			if (getFitness(faceId, neighborId) == -1) {
 				double fitness = calculateScaledJacobian(face, pair, runner);
 				storeFitness(faceId, neighborId, fitness);
 			}
@@ -72,23 +76,24 @@ double FitnessPreprocessor::calculateScaledJacobian(FaceData* face, FaceData* pa
 
 void FitnessPreprocessor::storeFitness(unsigned int faceId, unsigned int neighborId, double score) {
 
-	// If the current face does not exist in the map, add it
-	if (fitnessMap.count(faceId) == 0) {
-		std::unordered_map<unsigned int, double> neighborMap;
-		fitnessMap[faceId] = neighborMap;
-	}
+	// Store the score with the corresponding neighbor
+	auto pair = std::make_pair(neighborId, score);
+	fitnessMap[faceId].push_back(pair);
 
-	// Do the same operation for its neighbor
-	if (fitnessMap.count(neighborId) == 0) {
-		std::unordered_map<unsigned int, double> neighborMap;
-		fitnessMap[neighborId] = neighborMap;
-	}
-
-	// Add the score with the neighbor
-	fitnessMap[faceId][neighborId] = score;
-	fitnessMap[neighborId][faceId] = score;
+	// Same operation in reverse order
+	auto pair2 = std::make_pair(faceId, score);
+	fitnessMap[neighborId].push_back(pair2);
 }
 
 double FitnessPreprocessor::getFitness(unsigned int faceId, unsigned int neighborId) {
-	return fitnessMap[faceId][neighborId];
+
+	// Find the score with the corresponding neighbor
+	for (auto pair : fitnessMap[faceId]) {
+		if (pair.first == neighborId) {
+			return pair.second;
+		}
+	}
+
+	// Error case, expected to never occur
+	return -1;
 }

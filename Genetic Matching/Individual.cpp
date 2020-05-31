@@ -4,11 +4,19 @@ Individual::Individual() {
 	this->id = 0;
 }
 
-Individual::Individual(unsigned int id, Chromosome chromosome) {
+Individual::Individual(unsigned int id, Chromosome &chromosome) {
 	this->id = id;
 	this->chromosome = chromosome;
 	calculateFitness();
 	countMatchings();
+}
+
+Individual::Individual(const Individual &original) {
+	this->id = original.getId();
+	this->fitness = original.getTotalFitness();
+	this->matchCount = original.getMatchCount();
+	Chromosome chromosome = original.getChromosome();
+	copy(chromosome.begin(), chromosome.end(), back_inserter(this->chromosome));
 }
 
 void Individual::calculateFitness() {
@@ -30,26 +38,30 @@ void Individual::countMatchings() {
 	}
 }
 
-unsigned int Individual::getId() {
+void Individual::setId(unsigned int id) {
+	this->id = id;
+}
+
+unsigned int Individual::getId() const {
 	return id;
 }
 
-Chromosome &Individual::getChromosome() {
+const Chromosome &Individual::getChromosome() const {
 	return chromosome;
 }
 
-double Individual::getTotalFitness() {
+double Individual::getTotalFitness() const {
 	return fitness;
 }
 
-double Individual::getAverageFitness() {
+double Individual::getAverageFitness() const {
 	return fitness / chromosome.size();
 }
 
-unsigned int Individual::getMatchCount() {
+unsigned int Individual::getMatchCount() const {
 	return matchCount;
 }
 
-double Individual::getMatchingPercentage() {
+double Individual::getMatchingPercentage() const {
 	return (double) matchCount / (double) chromosome.size() * 100;
 }

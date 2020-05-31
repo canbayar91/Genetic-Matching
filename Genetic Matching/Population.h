@@ -3,8 +3,10 @@
 
 #include "Individual.h"
 #include "TriangularMesh.h"
-#include <unordered_map>
 #include <queue>
+#include <map>
+
+#define LOCAL_AREA_DEPTH 3
 
 class Population {
 public:
@@ -13,10 +15,10 @@ public:
 	Population(unsigned int size, const TriangularMesh* mesh);
 
 	// Exchanges genes between randomly selected individuals in order to introduce a new individual
-	void crossover();
+	void crossover(unsigned int indexSmall, unsigned int indexBig);
 
 	// Mutates a random individual in order to introduce a new individual 
-	void mutation();
+	void mutation(unsigned int index);
 
 	// Selects the individuals with highest fitness score and removes others until population size reaches initial size
 	void selection();
@@ -42,7 +44,7 @@ private:
 	std::priority_queue<Individual, std::vector<Individual>, FitnessOrder> population;
 
 	// Used as a fast reference for individuals in population
-	std::unordered_map<unsigned int, Individual> individualMapping;
+	std::map<unsigned int, Individual> individualMapping;
 
 	// Each time a new individual is created, this counter will be incremented
 	unsigned int populationCounter = 0;
@@ -57,7 +59,7 @@ private:
 	void initialize();
 
 	// Generates a new random individual (matching) for the population
-	void generateIndividual();
+	void generateIndividual(std::vector<size_t> &indexVector);
 
 	// Stores the given individual 
 	void storeIndividual(Individual &individual);

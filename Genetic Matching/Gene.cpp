@@ -12,10 +12,23 @@ void Gene::match(unsigned int neighborId) {
 	fitness = preprocessor->getFitness(faceId, matchId);
 }
 
+void Gene::unmatch() {
+	matchFlag = false;
+	fitness = 0;
+}
+
 bool Gene::isMatched() {
 	return matchFlag;
 }
 
 double Gene::getFitness() {
 	return fitness;
+}
+
+unsigned int Gene::getFaceId() {
+	return faceId;
+}
+
+unsigned int Gene::getMatchId() {
+	return matchId;
 }

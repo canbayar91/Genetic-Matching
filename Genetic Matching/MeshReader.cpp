@@ -1,4 +1,5 @@
 #include "MeshReader.h"
+#include <iostream>
 #include <fstream>
 
 MeshReader* MeshReader::instance = new MeshReader();
@@ -17,6 +18,9 @@ MeshReader* MeshReader::getInstance() {
 }
 
 const TriangularMesh* MeshReader::readMesh(std::string filepath) {
+
+	// Output the start of reading
+	std::cout << "Mesh is being read..." << std::endl;
 
 	// Open the file in given location
 	std::ifstream infile(filepath);

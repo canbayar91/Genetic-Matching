@@ -18,10 +18,10 @@ public:
 	~TriangularMesh();
 
 	// Get vertex list
-	const VertexList getVertices() const;
+	const VertexList &getVertices() const;
 
 	// Get face list
-	const FaceList getFaces() const;
+	const FaceList &getFaces() const;
 
 	// Get vertex count
 	size_t getVertexCount() const;

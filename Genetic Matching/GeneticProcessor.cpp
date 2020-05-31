@@ -68,8 +68,24 @@ void GeneticProcessor::nextGeneration() {
 
 	// Each generation doubles the size of the population by a factor of 2
 	for (unsigned int i = 0; i < POPULATION_SIZE / 2; i++) {
-		population->crossover();
-		population->mutation();
+
+		// Crossover between randomly selected individuals
+		unsigned int randomCrossoverIndex1 = (unsigned int) rand() % POPULATION_SIZE;
+		unsigned int randomCrossoverIndex2 = (unsigned int) rand() % POPULATION_SIZE;
+		while (randomCrossoverIndex2 == randomCrossoverIndex1) {
+			randomCrossoverIndex2 = (unsigned int) rand() % POPULATION_SIZE;
+		}
+
+		// Not very important, but set the first index to smaller value to simplify the search
+		if (randomCrossoverIndex1 < randomCrossoverIndex2) {
+			population->crossover(randomCrossoverIndex1, randomCrossoverIndex2);
+		} else {
+			population->crossover(randomCrossoverIndex2, randomCrossoverIndex1);
+		}
+		
+		// Mutation between randomly selected individuals
+		unsigned int randomMutationIndex = (unsigned int)rand() % POPULATION_SIZE;
+		population->mutation(randomMutationIndex);
 	}
 	
 	// Half of the individuals eliminated at the end of the generation

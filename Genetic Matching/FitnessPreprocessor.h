@@ -2,7 +2,8 @@
 #define FITNESS_PREPROCESSOR
 
 #include "TriangularMesh.h"
-#include <unordered_map>
+
+typedef std::pair<unsigned int, double> ScoreData;
 
 class FitnessPreprocessor {
 public:
@@ -11,7 +12,7 @@ public:
 	static FitnessPreprocessor* getInstance();
 
 	// Calculates all possible matching scores (3 x faceCount / 2) prior to start matching
-	void precalculateMatchingScores(FaceList faceList);
+	void precalculateMatchingScores(FaceList &faceList);
 
 	// Returns the pre-calculated fitness score of given face pair
 	double getFitness(unsigned int faceId, unsigned int neighborId);
@@ -22,7 +23,7 @@ private:
 	static FitnessPreprocessor* instance;
 
 	// Stores the pre-calculated fitness function results for each possible matching (3 for each face)
-	std::unordered_map<unsigned int, std::unordered_map<unsigned int, double>> fitnessMap;
+	std::vector<std::vector<ScoreData>> fitnessMap;
 
 	// Default constuctor
 	FitnessPreprocessor();

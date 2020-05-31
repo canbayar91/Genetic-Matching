@@ -12,11 +12,20 @@ public:
 	// Matches the gene with the given neighbor
 	void match(unsigned int neighborId);
 
+	// Clears the matching
+	void unmatch();
+
 	// Returns the match flag
 	bool isMatched();
 
 	// Returns the fitness score 
 	double getFitness();
+
+	// Returns the face id
+	unsigned int getFaceId();
+
+	// Returns the face id of its match
+	unsigned int getMatchId();
 
 private:
 

@@ -16,25 +16,31 @@ public:
 	Individual();
 
 	// Constructor
-	Individual(unsigned int id, Chromosome chromosome);
+	Individual(unsigned int id, Chromosome &chromosome);
+
+	// Copy constructor
+	Individual(const Individual &original);
+
+	// Set the identifier
+	void setId(unsigned int id);
 
 	// Get the identifier
-	unsigned int getId();
+	unsigned int getId() const;
 
 	// Get the chromosome
-	Chromosome &getChromosome();
+	const Chromosome &getChromosome() const;
 
 	// Get the total fitness score of all genes in the chromosome
-	double getTotalFitness();
+	double getTotalFitness() const;
 
 	// Get the average fitness score of a gene in the chromosome
-	double getAverageFitness();
+	double getAverageFitness() const;
 
 	// Get the matched gene count
-	unsigned int getMatchCount();
+	unsigned int getMatchCount() const;
 
 	// Get the percentage of matched genes
-	double getMatchingPercentage();
+	double getMatchingPercentage() const;
 
 private:
 
