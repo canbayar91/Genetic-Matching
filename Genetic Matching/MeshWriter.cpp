@@ -1,5 +1,7 @@
 #include "MeshWriter.h"
+#include <iostream>
 #include <fstream>
+#include <ctime>
 
 MeshWriter* MeshWriter::instance = new MeshWriter();
 
@@ -16,7 +18,13 @@ MeshWriter* MeshWriter::getInstance() {
 	return instance;
 }
 
-void MeshWriter::writeMesh(std::string filepath, const TriangularMesh* mesh, std::map<unsigned int, unsigned int> matching) {
+void MeshWriter::writeMesh(std::string &filepath, const TriangularMesh* mesh, std::map<unsigned int, unsigned int> &matching) {
+
+	// Output the start of writing
+	std::cout << "Writing matching to " << filepath << std::endl;
+
+	// Start time
+	const clock_t beginTime = clock();
 
 	// Delete output file first if it already exists
 	std::remove(filepath.c_str());
@@ -72,4 +80,11 @@ void MeshWriter::writeMesh(std::string filepath, const TriangularMesh* mesh, std
 
 	// Close the output file
 	outfile.close();
+
+	// End time
+	const clock_t endTime = clock();
+
+	// Output the time difference
+	float timeDifference = float(endTime - beginTime);
+	std::cout << "Writing Time: " << timeDifference / CLOCKS_PER_SEC << " seconds" << std::endl;
 }

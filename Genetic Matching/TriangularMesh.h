@@ -7,12 +7,13 @@
 
 typedef std::vector<VertexData*> VertexList;
 typedef std::vector<FaceData*> FaceList;
+typedef std::pair<unsigned int, unsigned int> VertexPair;
 
 class TriangularMesh {
 public:
 
 	// Constructor
-	TriangularMesh(std::vector<Vertex> vertices, std::vector<Face> faces);
+	TriangularMesh(std::vector<Vertex> &vertices, std::vector<Face> &faces);
 
 	// Destructor
 	~TriangularMesh();

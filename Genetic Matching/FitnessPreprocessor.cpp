@@ -56,7 +56,7 @@ void FitnessPreprocessor::precalculateMatchingScores(FaceList &faceList) {
 
 	// Output the total calculation time
 	float timeDifference = float(endTime - beginTime);
-	std::cout << "Fitness Pre-calculation: " << timeDifference / CLOCKS_PER_SEC << " seconds" << std::endl;
+	std::cout << "Fitness Pre-calculation Time: " << timeDifference / CLOCKS_PER_SEC << " seconds" << std::endl;
 }
 
 double FitnessPreprocessor::calculateScaledJacobian(FaceData* face, FaceData* pair, HalfEdgeData* runner) {

@@ -2,9 +2,6 @@
 #define DEFINITIONS
 
 #include "Face.h"
-#include <utility>
-
-typedef std::pair<unsigned int, unsigned int> VertexPair;
 
 struct HalfEdgeData;
 

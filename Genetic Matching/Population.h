@@ -40,9 +40,6 @@ private:
 	// Input triangular mesh instance
 	const TriangularMesh* mesh;
 
-	// Individuals in the population, sorted by fitness score in descending order
-	std::priority_queue<Individual, std::vector<Individual>, FitnessOrder> population;
-
 	// Used as a fast reference for individuals in population
 	std::map<unsigned int, Individual> individualMapping;
 
@@ -54,6 +51,12 @@ private:
 
 	// The identifier of the individual with the highest amount of matching
 	unsigned int mostMatchedIndividualId = 0;
+
+	// The highest amount of average fitness in the population
+	double highestAverageFitness = 0;
+
+	// The highest amount of matched face count in the population
+	unsigned int highestMatchCount = 0;
 
 	// Generates random individuals until it reaches the initial size
 	void initialize();

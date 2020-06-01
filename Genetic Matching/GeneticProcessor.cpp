@@ -19,7 +19,7 @@ void GeneticProcessor::process() {
 	
 	// Generate the initial population of size n
 	generateInitialPopulation();
-
+	
 	// Start time of generation
 	const clock_t beginTime = clock();
 
@@ -41,14 +41,11 @@ void GeneticProcessor::process() {
 	float averageTime = timeDifference / generationCounter;
 
 	// Output the iteration count and average generation time of the algorithm
-	std::cout << "Generation Count: " << generationCounter << std::endl;
 	std::cout << "Average Generation Time: " << averageTime / CLOCKS_PER_SEC << " seconds" << std::endl;
+	std::cout << "Generation Count: " << generationCounter << std::endl;
 }
 
 void GeneticProcessor::generateInitialPopulation() {
-
-	// Output the population size
-	std::cout << "Population Size: " << POPULATION_SIZE << std::endl;
 
 	// Start time of generation
 	const clock_t beginTime = clock();
@@ -59,9 +56,10 @@ void GeneticProcessor::generateInitialPopulation() {
 	// End time of generation
 	const clock_t endTime = clock();
 
-	// Output the time difference
+	// Output the time difference and population size
 	float timeDifference = float(endTime - beginTime);
 	std::cout << "Initial Population Creation Time: " << timeDifference / CLOCKS_PER_SEC << " seconds" << std::endl;
+	std::cout << "Population Size: " << POPULATION_SIZE << std::endl;
 }
 
 void GeneticProcessor::nextGeneration() {

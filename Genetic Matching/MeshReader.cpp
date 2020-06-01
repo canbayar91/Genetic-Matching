@@ -1,6 +1,7 @@
 #include "MeshReader.h"
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 MeshReader* MeshReader::instance = new MeshReader();
 
@@ -17,10 +18,13 @@ MeshReader* MeshReader::getInstance() {
 	return instance;
 }
 
-const TriangularMesh* MeshReader::readMesh(std::string filepath) {
+const TriangularMesh* MeshReader::readMesh(std::string &filepath) {
 
 	// Output the start of reading
-	std::cout << "Mesh is being read..." << std::endl;
+	std::cout << "Reading mesh from " << filepath << std::endl;
+
+	// Start time
+	const clock_t beginTime = clock();
 
 	// Open the file in given location
 	std::ifstream infile(filepath);
@@ -66,6 +70,13 @@ const TriangularMesh* MeshReader::readMesh(std::string filepath) {
 
 	// Create the mesh using vertex and face list
 	TriangularMesh* mesh = new TriangularMesh(vertexList, faceList);
+
+	// End time
+	const clock_t endTime = clock();
+
+	// Output the time difference
+	float timeDifference = float(endTime - beginTime);
+	std::cout << "Reading Time: " << timeDifference / CLOCKS_PER_SEC << " seconds" << std::endl;
 
 	// Return the resulting list
 	return mesh;

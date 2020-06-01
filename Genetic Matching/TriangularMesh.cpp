@@ -1,6 +1,6 @@
 #include "TriangularMesh.h"
 
-TriangularMesh::TriangularMesh(std::vector<Vertex> vertexList, std::vector<Face> faceList) {
+TriangularMesh::TriangularMesh(std::vector<Vertex> &vertexList, std::vector<Face> &faceList) {
 
 	// Create and store the vertex data
 	vertexCount = vertexList.size();

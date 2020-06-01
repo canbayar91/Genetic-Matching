@@ -12,7 +12,7 @@ public:
 	static MeshWriter* getInstance();
 
 	// Writes the quadrilateral mesh to the given file
-	void writeMesh(std::string filepath, const TriangularMesh* mesh, std::map<unsigned int, unsigned int> matching);
+	void writeMesh(std::string &filepath, const TriangularMesh* mesh, std::map<unsigned int, unsigned int> &matching);
 
 private:
 

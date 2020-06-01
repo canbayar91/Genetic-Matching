@@ -11,7 +11,7 @@ public:
 	static MeshReader* getInstance();
 
 	// Reads the mesh in the given filepath
-	const TriangularMesh* readMesh(std::string filepath);
+	const TriangularMesh* readMesh(std::string &filepath);
 
 private:
 

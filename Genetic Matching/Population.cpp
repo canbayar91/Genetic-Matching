@@ -49,8 +49,9 @@ void Population::generateIndividual(std::vector<size_t> &indexVector) {
 
 		// Select a random face and if it is not matched yet, try to match
 		int faceId = indexVector[i];
-		chromosome[faceId].setFaceId(faceId);
-		if (!chromosome[faceId].isMatched()) {
+		Gene &gene = chromosome[faceId];
+		gene.setFaceId(faceId);
+		if (!gene.isMatched()) {
 
 			// Run through the half-edges (there are exacly 3 neighbors for each mesh)
 			FaceData* face = faceList[faceId];
@@ -60,10 +61,11 @@ void Population::generateIndividual(std::vector<size_t> &indexVector) {
 				// Match the face with the first unmatched neighbor
 				FaceData* pair = runner->pair->face;
 				unsigned int neighborId = pair->id;
-				if (!chromosome[neighborId].isMatched()) {
-					chromosome[neighborId].setFaceId(neighborId);
-					chromosome[faceId].match(neighborId);
-					chromosome[neighborId].match(faceId);
+				Gene &neighbor = chromosome[neighborId];
+				if (!neighbor.isMatched()) {
+					neighbor.setFaceId(neighborId);
+					gene.match(neighborId);
+					neighbor.match(faceId);
 					break;
 				}
 
@@ -81,25 +83,27 @@ void Population::generateIndividual(std::vector<size_t> &indexVector) {
 
 void Population::storeIndividual(Individual &individual) {
 
-	// Add the new individual into the population
-	population.push(individual);
-
 	// Add reference to the map
 	individualMapping[populationCounter] = individual;
 
 	// Increment the counter
 	populationCounter++;
 
+	// Get the individual id
+	unsigned int individualId = individual.getId();
+
 	// Update the fittest individual
-	Individual fittestIndividual = getFittestIndividual();
-	if (individual.getAverageFitness() > fittestIndividual.getAverageFitness()) {
-		fittestIndividualId = individual.getId();
+	double averageFitness = individual.getAverageFitness();
+	if (averageFitness > highestAverageFitness) {
+		fittestIndividualId = individualId;
+		highestAverageFitness = averageFitness;
 	}
 
 	// Update the most matched individual
-	Individual mostMatchedIndividual = getMostMatchedIndividual();
-	if (individual.getMatchCount() > fittestIndividual.getMatchCount()) {
-		mostMatchedIndividualId = individual.getId();
+	unsigned int matchCount = individual.getMatchCount();
+	if (matchCount > highestMatchCount) {
+		mostMatchedIndividualId = individualId;
+		highestMatchCount = matchCount;
 	}
 }
 
@@ -130,11 +134,8 @@ void Population::crossover(unsigned int indexSmall, unsigned int indexBig) {
 	size_t faceCount = mesh->getFaceCount();
 	int rootId = rand() % faceCount;
 
-	// Store the individual (skip if it has worse fitness than the worst individual)
-	Individual worstIndividual = population.top();
-	if (individual.getTotalFitness() > worstIndividual.getTotalFitness()) {
-		storeIndividual(individual);
-	}
+	// Store the individual
+	storeIndividual(individual);
 }
 
 void Population::mutation(unsigned int index) {
@@ -156,25 +157,28 @@ void Population::mutation(unsigned int index) {
 	size_t faceCount = mesh->getFaceCount();
 	int rootId = rand() % faceCount;
 
-	// Store the individual (skip if it has worse fitness than the worst individual)
-	Individual worstIndividual = population.top();
-	if (individual.getTotalFitness() > worstIndividual.getTotalFitness()) {
-		storeIndividual(individual);
-	}
+	// Store the individual
+	storeIndividual(individual);
 }
 
 void Population::selection() {
 
 	// Remove the individuals with the lowest fitness score
-	while (population.size() > size) {
+	while (individualMapping.size() > size) {
 
-		// Remove the individual from queue
-		Individual individual = population.top();
-		population.pop();
+		// Find the individual with the worst score
+		unsigned int worstId = 0;
+		double worstFitnessScore = DBL_MAX;
+		for (auto it = individualMapping.begin(); it != individualMapping.end(); it++) {
+			double current = it->second.getTotalFitness();
+			if (current < worstFitnessScore) {
+				worstFitnessScore = current;
+				worstId = it->first;
+			}
+		}
 
 		// Erase its reference from map
-		unsigned int individualId = individual.getId();
-		individualMapping.erase(individualId);
+		individualMapping.erase(worstId);
 	}
 }
 
