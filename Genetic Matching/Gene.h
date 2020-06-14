@@ -6,26 +6,36 @@
 class Gene {
 public:
 
-	// Sets the face id
-	void setFaceId(unsigned int faceId);
-
 	// Matches the gene with the given neighbor
 	void match(unsigned int neighborId);
 
 	// Clears the matching
 	void unmatch();
 
+	// Sets the matched flag
+	void setMatched(bool matched);
+
+	// Sets the face id
+	void setFaceId(unsigned int faceId);
+
+	// Sets the neighbor id
+	void setNeighborId(unsigned int neighborId);
+
+	// Sets the fitness
+	void setFitness(double fitness);
+
 	// Returns the match flag
 	bool isMatched();
-
-	// Returns the fitness score 
-	double getFitness();
 
 	// Returns the face id
 	unsigned int getFaceId();
 
 	// Returns the face id of its match
-	unsigned int getMatchId();
+	unsigned int getNeighborId();
+
+	// Returns the fitness score 
+	double getFitness();
+
 
 private:
 
@@ -37,7 +47,7 @@ private:
 	unsigned int faceId;
 
 	// If the match flag is set, this id represents the face which the face with faceId is matched with
-	unsigned int matchId;
+	unsigned int neighborId;
 
 	// Contribution of the gene to the fitness score - 0 if matchFlag is false (Scaled Jacobian)
 	double fitness = 0;

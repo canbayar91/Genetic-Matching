@@ -7,6 +7,7 @@
 #include <map>
 
 #define LOCAL_AREA_DEPTH 3
+#define EPSILON 0.001
 
 class Population {
 public:
@@ -15,7 +16,7 @@ public:
 	Population(unsigned int size, const TriangularMesh* mesh);
 
 	// Exchanges genes between randomly selected individuals in order to introduce a new individual
-	void crossover(unsigned int indexSmall, unsigned int indexBig);
+	void crossover(unsigned int index1, unsigned int index2);
 
 	// Mutates a random individual in order to introduce a new individual 
 	void mutation(unsigned int index);
@@ -66,6 +67,12 @@ private:
 
 	// Stores the given individual 
 	void storeIndividual(Individual &individual);
+
+	// Creates an exact replica of the parent on the given index
+	Individual cloneIndividual(unsigned int index);
+
+	// Swap the gene with the given index between individuals
+	void swapGenes(Chromosome &chromosome1, Chromosome &chromosome2, unsigned int index);
 
 };
 

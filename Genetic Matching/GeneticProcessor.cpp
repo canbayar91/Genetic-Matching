@@ -11,7 +11,7 @@ GeneticProcessor::~GeneticProcessor() {
 	population = 0;
 }
 
-void GeneticProcessor::process() {
+Individual &GeneticProcessor::process() {
 
 	// Calculate all possible matching scores for triangles
 	FaceList faceList = mesh->getFaces();
@@ -43,6 +43,9 @@ void GeneticProcessor::process() {
 	// Output the iteration count and average generation time of the algorithm
 	std::cout << "Average Generation Time: " << averageTime / CLOCKS_PER_SEC << " seconds" << std::endl;
 	std::cout << "Generation Count: " << generationCounter << std::endl;
+
+	// Return the fittest individual
+	return population->getFittestIndividual();
 }
 
 void GeneticProcessor::generateInitialPopulation() {
@@ -74,15 +77,11 @@ void GeneticProcessor::nextGeneration() {
 			randomCrossoverIndex2 = (unsigned int) rand() % POPULATION_SIZE;
 		}
 
-		// Not very important, but set the first index to smaller value to simplify the search
-		if (randomCrossoverIndex1 < randomCrossoverIndex2) {
-			population->crossover(randomCrossoverIndex1, randomCrossoverIndex2);
-		} else {
-			population->crossover(randomCrossoverIndex2, randomCrossoverIndex1);
-		}
+		// Crossover between the selected individuals
+		population->crossover(randomCrossoverIndex1, randomCrossoverIndex2);
 		
 		// Mutation between randomly selected individuals
-		unsigned int randomMutationIndex = (unsigned int)rand() % POPULATION_SIZE;
+		unsigned int randomMutationIndex = (unsigned int) rand() % POPULATION_SIZE;
 		population->mutation(randomMutationIndex);
 	}
 	

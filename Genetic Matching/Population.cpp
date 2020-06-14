@@ -1,7 +1,9 @@
 #include "Population.h"
 #include <iostream>
 #include <random>
-#include <time.h>
+#include <ctime>
+#include <queue>
+#include <set>
 
 Population::Population(unsigned int size, const TriangularMesh* mesh) {
 	this->size = size;
@@ -81,6 +83,141 @@ void Population::generateIndividual(std::vector<size_t> &indexVector) {
 	storeIndividual(individual);
 }
 
+void Population::crossover(unsigned int index1, unsigned int index2) {
+
+	// Clone the parents to create new children
+	Individual child1 = cloneIndividual(index1);
+	Individual child2 = cloneIndividual(index2);
+
+	// Get the chromosomes
+	Chromosome chromosome1 = child1.getChromosome();
+	Chromosome chromosome2 = child2.getChromosome();
+
+	// Pick a random crossover point
+	FaceList faceList = mesh->getFaces();
+	size_t faceCount = mesh->getFaceCount();
+	unsigned int rootId = (unsigned int) rand() % faceCount;
+
+	// Create a queue for breadth-first search and a set to keep track of processed elements
+	std::queue<std::pair<unsigned int, int>> faceQueue;
+	std::set<unsigned int> processedFaces;
+
+	// Add the root face into the queue
+	auto rootPair = std::make_pair(rootId, 0);
+	faceQueue.push(rootPair);
+
+	// The operation will only cover the faces on the pre-defined depth from the root node
+	while (!faceQueue.empty()) {
+
+		// Get the face at the front of the queue
+		auto current = faceQueue.front();
+		unsigned int currentId = current.first;
+		int currentDepth = current.second;
+
+		// Swap the root node and remove it from the queue
+		swapGenes(chromosome1, chromosome2, rootId);
+		faceQueue.pop();
+
+		// Operations stops when the local area limit is reached
+		if (currentDepth < LOCAL_AREA_DEPTH) {
+
+			// Run through the half-edges (there are exacly 3 neighbors for each mesh)
+			FaceData* face = faceList[currentId];
+			HalfEdgeData* runner = face->half;
+			do {
+
+				// Get the neighbor data
+				FaceData* neighbor = runner->pair->face;
+				unsigned int neighborId = neighbor->id;
+
+				// Skip the already processed faces
+				if (processedFaces.count(neighborId) == 0) {
+
+					// Push the neighbor into the queue
+					auto pair = std::make_pair(neighborId, currentDepth + 1);
+					faceQueue.push(pair);
+				}
+
+				// Update the runner pointer
+				runner = runner->next;
+
+			} while (runner != face->half);
+		}
+
+		// Keep track of the processed faces, since they can be incident with more than one faces
+		processedFaces.insert(currentId);
+	}
+
+	// Store the first new child
+	child1.setId(populationCounter);
+	storeIndividual(child1);
+
+	// Store the second new child
+	child2.setId(populationCounter);
+	storeIndividual(child2);
+}
+
+void Population::swapGenes(Chromosome &chromosome1, Chromosome &chromosome2, unsigned int index) {
+
+	// Get the genes on index
+	Gene &gene1 = chromosome1[index];
+	Gene &gene2 = chromosome2[index];
+
+	// Don't waste time if matching is already the same
+	if (gene1.getNeighborId() != gene2.getNeighborId()) {
+
+		// Temporary swap variables
+		bool matchFlag = gene1.isMatched();
+		unsigned int neighborId = gene1.getNeighborId();
+		double fitness = gene1.getFitness();
+
+		// Update first gene
+		gene1.setMatched(gene2.isMatched());
+		gene1.setNeighborId(gene2.getNeighborId());
+		gene1.setFitness(gene2.getFitness());
+
+		// Update second gene
+		gene2.setMatched(matchFlag);
+		gene2.setNeighborId(neighborId);
+		gene2.setFitness(fitness);
+	}
+}
+
+void Population::mutation(unsigned int index) {
+
+	// Clone the parent to create a new child
+	Individual child = cloneIndividual(index);
+
+	// Pick a random mutation point
+	size_t faceCount = mesh->getFaceCount();
+	int rootId = rand() % faceCount;
+
+	// Store the child
+	child.setId(populationCounter);
+	// storeIndividual(child);
+}
+
+void Population::selection() {
+
+	// Remove the individuals with the lowest fitness score
+	while (individualMapping.size() > size) {
+
+		// Find the individual with the worst score
+		unsigned int worstId = 0;
+		double worstFitnessScore = DBL_MAX;
+		for (auto it = individualMapping.begin(); it != individualMapping.end(); it++) {
+			double current = it->second.getTotalFitness();
+			if (current <= worstFitnessScore || abs(current - worstFitnessScore) <= EPSILON) {
+				worstFitnessScore = current;
+				worstId = it->first;
+			}
+		}
+
+		// Erase its reference from map
+		individualMapping.erase(worstId);
+	}
+}
+
 void Population::storeIndividual(Individual &individual) {
 
 	// Add reference to the map
@@ -107,38 +244,7 @@ void Population::storeIndividual(Individual &individual) {
 	}
 }
 
-void Population::crossover(unsigned int indexSmall, unsigned int indexBig) {
-
-	// Iterate until the small index
-	auto it = individualMapping.begin();
-	for (unsigned int i = 0; i < indexSmall; i++) {
-		it++;
-	}
-
-	// Get the first individual
-	Individual parent1 = it->second;
-
-	// Iterate until the big index
-	for (unsigned int i = indexSmall; i < indexBig; i++) {
-		it++;
-	}
-
-	// Get the second individual
-	Individual parent2 = it->second;
-
-	// Create a new chromosome by copying the parent
-	Individual individual(parent1);
-	individual.setId(populationCounter);
-
-	// Pick a random crossover point
-	size_t faceCount = mesh->getFaceCount();
-	int rootId = rand() % faceCount;
-
-	// Store the individual
-	storeIndividual(individual);
-}
-
-void Population::mutation(unsigned int index) {
+Individual Population::cloneIndividual(unsigned int index) {
 
 	// Iterate until the index
 	auto it = individualMapping.begin();
@@ -146,40 +252,11 @@ void Population::mutation(unsigned int index) {
 		it++;
 	}
 
-	// Get the first individual
+	// Get the individual
 	Individual parent = it->second;
 
 	// Create a new chromosome by copying the parent
-	Individual individual(parent);
-	individual.setId(populationCounter);
-
-	// Pick a random mutation point
-	size_t faceCount = mesh->getFaceCount();
-	int rootId = rand() % faceCount;
-
-	// Store the individual
-	storeIndividual(individual);
-}
-
-void Population::selection() {
-
-	// Remove the individuals with the lowest fitness score
-	while (individualMapping.size() > size) {
-
-		// Find the individual with the worst score
-		unsigned int worstId = 0;
-		double worstFitnessScore = DBL_MAX;
-		for (auto it = individualMapping.begin(); it != individualMapping.end(); it++) {
-			double current = it->second.getTotalFitness();
-			if (current < worstFitnessScore) {
-				worstFitnessScore = current;
-				worstId = it->first;
-			}
-		}
-
-		// Erase its reference from map
-		individualMapping.erase(worstId);
-	}
+	return Individual(parent);
 }
 
 Individual &Population::getFittestIndividual() {

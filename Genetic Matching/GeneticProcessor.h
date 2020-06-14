@@ -19,7 +19,7 @@ public:
 	~GeneticProcessor();
 
 	// Genetically processes the input mesh
-	void process();
+	Individual &process();
 
 private:
 
